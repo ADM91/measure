@@ -1,7 +1,7 @@
 __author__ = 'masslab'
 
 from subprocess import call
-from utility.config import masscode_path
+from config import masscode_path
 from utility.queues import input_file_queue
 
 

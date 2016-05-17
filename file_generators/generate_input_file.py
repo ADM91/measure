@@ -1,7 +1,7 @@
 __author__ = 'masslab'
 
 import time
-from utility.config import software_name
+from config import software_name
 
 
 def generate_input_file(path, main_dict, data_dict, run_number, runs_total):

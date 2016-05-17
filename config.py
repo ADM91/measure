@@ -4,10 +4,17 @@ __author__ = 'masslab'
 # Name and software version
 software_name = "MEASURE 0.2"
 
+# Database login
+db_usr = 'username'
+db_pwd = 'passowrd'
+db_host_server = 'hostname'
+db_schema = 'schema'
+
 # This identifies the mass code path
 masscode_path = r'Path'
 
-# This identifies the base path the program will use to when prompting the user for input file directory
+# This identifies the base path the program will use to when prompting the
+# user for input file directory
 base_path = r'Path'
 
 # Good balance response strings
@@ -21,9 +28,10 @@ error_responses = ['ES\r\n', ]
 sleep_time = 0.2
 long_command_timeout = 60
 short_command_timeout = 10
+
 max_timeouts = 3
 
-# ---------------------Commands and statuses for balances control---------------------
+# ---------------------Commands and statuses for balances control---------
 AT106H = {'move': [['MOVE 1\r\n', 'MOVE 2\r\n', 'MOVE 3\r\n', 'MOVE 4\r\n'], ['Moving to position %s...', 'Movement complete', 'Error: failed to move to position %s']],
           'sink': [['SINK\r\n'], ['Sinking handler', 'Sink complete', 'Error: failed to sink handler']],
           'lift': [['LIFT\r\n'], ['Lifting handler', 'Lift complete', 'Error: failed to lift handler']],

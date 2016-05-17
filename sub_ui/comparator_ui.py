@@ -14,9 +14,9 @@ from at106h_settings import AT106HSettings
 from control.recipe_maker import RecipeMaker
 from control.recipe_execute import execute
 from control.ingredient_methods import id_command
-from utility.config import comparator_matching, masscode_path
+from config import comparator_matching, masscode_path
 from utility.show_dictionary import pretty
-from utility.config import base_path
+from config import base_path
 from utility.serial_ports import serial_ports
 
 

@@ -4,11 +4,12 @@ import sys
 from threading import Thread
 from Queue import Queue
 from PyQt4 import QtGui, uic
-from database_orm import DatabaseORM
+from PyQt4.QtCore import QObject, pyqtSignal
+from utility.database_orm import DatabaseORM
 from utility.run_masscode_queue import run_masscode_queue
-from utility.config import base_path
 from utility.show_dictionary import pretty
-from utility.config import software_name
+from config import base_path
+from config import software_name
 from sub_ui.comparator_ui import ComparatorUi
 from sub_ui.error_message import ErrorMessage
 from sub_ui.login import LoginUi
@@ -26,7 +27,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 
-class MainUI:
+class MainUI(QObject):
     """ Provides functionality for the main user interface
 
     The main functionality available in this user interface is balance, weighing design, and weight selection for
@@ -79,12 +80,18 @@ class MainUI:
                  'cg differences': [],
                  'restraint type b': None,
                  'check between': None,
-                 'units': None}
+                 'units': None,
+                 'user id': None}
+
+    quit_signal = pyqtSignal(int)
 
     def __init__(self, window):
+        super(QObject, self).__init__()
         window.setWindowIcon(QtGui.QIcon('Masses.png'))
         window.setWindowTitle(software_name)
-        self.ui = uic.loadUi('main.ui', window)
+        self.ui = uic.loadUi(r'\\elwood.nist.gov\68_PML\684\users\masslab\My Documents\PycharmProjects\MEASURE\main.ui', window)
+
+        self.quit_signal.connect(self.quit_slot)
 
         # Instantiate the database object relational mapping with login()
         self.db = None
@@ -103,6 +110,9 @@ class MainUI:
 
         # Display the main UI
         window.show()
+
+    def quit_slot():
+        app.quit()
 
     def handler_connector(self):
         """ Activate event detection"""
@@ -123,22 +133,13 @@ class MainUI:
 
     def login(self):
         """ Prompt user for database credentials """
-        while True:
-            # Execute login user interface
-            credentials = LoginUi()
-            credentials.exec_()
-            usr = str(credentials.textName.text())
-            pwd = str(credentials.textPass.text())
 
-            try:
-                # Try instantiating database object with given credentials
-                self.db = DatabaseORM(usr, pwd)
-                return
-            except Exception as e:
-                print e
-                print "Incorrect username or password"
-                error_message = ErrorMessage("Incorrect username or password")
-                error_message.exec_()
+        # Execute login user interface
+        login = LoginUi(self.quit_signal)
+        self.db = login.db
+        self.main_dict['user id'] = login.ident
+        if login.ident == None:
+            app.quit()
 
     def click_config_bal(self):
         """ Populate main_dict with selected items and call the comparator user interface """

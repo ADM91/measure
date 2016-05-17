@@ -1,7 +1,18 @@
 __author__ = 'masslab'
 
-from sqlalchemy import create_engine, MetaData, Table
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, Text
 from sqlalchemy.sql import select, text
+from config import db_usr, db_pwd, db_host_server, db_schema
+
+
+
+
+# class User(DatabaseORM):
+#     __table__ = user
+#     id = Column('id', Integer, primary_key=True)
+#     username = Column('username', Text)
+#     password = Column('password', Text)
+
 
 
 class DatabaseORM:
@@ -11,14 +22,10 @@ class DatabaseORM:
     queries and return data in the format specified on the database.
     All database interaction takes place here.
 
-    Args:
-        usr (str): calibration database username
-        pwd (str): calibration database password
     """
-    def __init__(self, usr, pwd):
+    def __init__(self):
         # Generate engine and session class for calibrations_v2 schema
-        self.engine = create_engine("mysql://%s:%s@host_server/schema" % (usr, pwd),
-                                    echo=False)
+        self.engine = create_engine("mysql://%s:%s@%s/%s" % (db_usr, db_pwd, db_host_server, db_schema), echo=False)
 
         # Reflect the database schema to a python object
         meta = MetaData()
@@ -52,6 +59,19 @@ class DatabaseORM:
         # Table: Designs
         self.designs = Table('designs', meta)
         self.designs_compatibility = Table('designs_compatibility', meta)
+
+        # Table: User
+        self.user = Table('user', meta)
+
+    def check_user_password(self, usr, pwd):
+        """ Return id if user and password exist
+
+        Returns:
+          user id
+        """
+        sql = text('SELECT id FROM user'
+                   ' WHERE (user.username = "%s" and user.password = "%s")' % (usr, pwd))
+        return self.engine.execute(sql).fetchall()
 
     def design_data(self, design_id):
         """ Return information about weighing design.

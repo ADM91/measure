@@ -4,7 +4,7 @@ import time
 import re
 import numpy as np
 from decimal import Decimal
-from utility.config import good_responses
+from config import good_responses
 
 
 def parse(string):
